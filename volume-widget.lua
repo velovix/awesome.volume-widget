@@ -53,12 +53,12 @@ function Volume:update(status)
 end
 
 function Volume:up()
-	run("amixer set " .. self.device .. " " .. self.step .. "+")
+	run("amixer set " .. self.device .. " " .. self.step .. "%+")
 	self:update({})
 end
 
 function Volume:down()
-	run("amixer set " .. self.device .. " " .. self.step .. "-")
+	run("amixer set " .. self.device .. " " .. self.step .. "%-")
 	self:update({})
 end
 
