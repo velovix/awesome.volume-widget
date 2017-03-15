@@ -19,6 +19,7 @@ end
 function Volume:new(args)
 	local obj = setmetatable({}, Volume)
 
+	obj.backend = args.backend or "alsa"
 	obj.step = args.step or 5
 	obj.device = args.device or "Master"
 
@@ -53,17 +54,30 @@ function Volume:update(status)
 end
 
 function Volume:up()
-	run("amixer set " .. self.device .. " " .. self.step .. "+")
+	if self.backend == "alsa" then
+		run("amixer set " .. self.device .. " " .. self.step .. "+")
+	elseif self.backend == "pulseaudio" then
+		run("pactl set-sink-volume " .. self.device .. " +" .. self.step .. "%");
+	end
 	self:update({})
 end
 
 function Volume:down()
-	run("amixer set " .. self.device .. " " .. self.step .. "-")
+	if self.backend == "alsa" then
+		run("amixer set " .. self.device .. " " .. self.step .. "-")
+	elseif self.backend == "pulseaudio" then
+		run("pactl set-sink-volume " .. self.device .. " -" .. self.step .. "%");
+	end
 	self:update({})
 end
 
 function Volume:getVolume()
-	local result = run("amixer get " .. self.device)
+	local result
+	if self.backend == "alsa" then
+		result = run("amixer get " .. self.device)
+	elseif self.backend == "pulseaudio" then
+		result = 50
+	end
 	return string.gsub(string.match(result, "%[%d*%%%]"), "%D", "")
 end
 
