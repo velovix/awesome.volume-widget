@@ -75,8 +75,13 @@ function Volume:getVolume()
 	local result
 	if self.backend == "alsa" then
 		result = run("amixer get " .. self.device)
+		return string.gsub(string.match(result, "%[%d*%%%]"), "%D", "")
 	elseif self.backend == "pulseaudio" then
-		result = 50
+		-- Unfortunately, Pulse Audio doesn't have a nice way to get the
+		-- current volume, so we have this unfortunate hack. Likely the most
+		-- brittle part of the code
+		result = run("pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,'")
+		return result
 	end
 	return string.gsub(string.match(result, "%[%d*%%%]"), "%D", "")
 end

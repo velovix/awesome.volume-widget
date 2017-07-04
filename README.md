@@ -1,13 +1,18 @@
 # Volume Widget
+
 Provides a simple volume widget for the Awesome window manager. It displays the
 current volume with an icon and allows you to adjust the volume when you press
 the volume up and down buttons on your keyboard, if you have them.
 
+This widget has been tested on awesome v4.1.
+
 ### Dependencies
-No extra Awesome libraries are required, but the widget does use the
-`amixer` command.
+
+No extra Awesome libraries are required, but the widget uses the
+`amixer` command for ALSA, or `pactl` for PulseAudio.
 
 ### Setup
+
 1. Navigate to your Awesome config directory (usually `~/.config/awesome`) and
    clone this repository with the following command:
 
@@ -21,11 +26,11 @@ No extra Awesome libraries are required, but the widget does use the
    config directory, run the following:
 
 	```
-	ln -s awesome.volume-widget/volume-widget.lua volume-widget.lua
+	ln -s $(pwd)awesome.volume-widget/volume-widget.lua volume-widget.lua
 	```
 
 3. In your rc.lua, add the following near the beginning of the file. This loads
-   up the library and has you access it through the new volume_widget table
+   up the library and has you access it through the new `volume_widget` table
    we're creating.
 
 	```
@@ -34,8 +39,8 @@ No extra Awesome libraries are required, but the widget does use the
 
 4. Add the following line near the beginning of your rc.lua, but after the line
    in the previous step. Providing an empty table sets all configurations to
-   their defaults. This should work for most users. See the configuration
-   section if you think you're special.
+   their defaults. See the configuration section for details, especially if you
+   use Pulse Audio.
 
 	```
 	local volume = volume_widget:new({})
@@ -61,13 +66,24 @@ No extra Awesome libraries are required, but the widget does use the
    icon on the top right of the screen!
 
 ### Configuration
-For most cases, the default configuration will work fine.  Unless you know for
-sure that you're different, you should try this first and see what kind of
-results you get. If you do need special configuration options, there are six
-provided. Feed them into your `new` function instead of the default empty
-table.
 
+The default configuration is probably fine for ALSA users, but if you use
+PulseAudio you will have to do some configuration. Feed configuration options
+into the `new` function instead of the default empty table.
+
+- **backend**: As of now, `alsa` and `pulseaudio` are the supported backends.
 - **step**: The amount that the volume should be incremented or decremented.
   The default is `5`.
-- **channel**: The channel that the widget should be modifying the volume of.
-  the default is `Master`.
+- **device**: The device to control. The default is "Master", which will work
+  for ALSA but not PulseAudio. When using PulseAudio, "devices" in this case
+  refer to "sinks". You probably want "0" as your device. You can take a look
+  at your available sinks with `pacmd list-sinks`.
+
+The following is an example configuration:
+
+```
+local volume = volume_widget:new({
+    backend="pulseaudio",
+    device="0",
+    step=2})
+```
