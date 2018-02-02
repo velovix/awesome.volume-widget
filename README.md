@@ -4,7 +4,7 @@ Provides a simple volume widget for the Awesome window manager. It displays the
 current volume with an icon and allows you to adjust the volume when you press
 the volume up and down buttons on your keyboard, if you have them.
 
-This widget has been tested on awesome v4.1.
+This widget has been tested on awesome v4.2.
 
 ### Dependencies
 
