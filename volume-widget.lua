@@ -1,5 +1,6 @@
 local wibox = require("wibox")
 local awful = require("awful")
+local naughty = require("naughty")
 require("math")
 require("string")
 
@@ -21,7 +22,11 @@ function Volume:new(args)
 
 	obj.backend = args.backend or "alsa"
 	obj.step = args.step or 5
-	obj.device = args.device or "Master"
+	if obj.backend == "alsa" then
+		obj.device = args.device or "Master"
+	elseif obj.backend == "pulseaudio" then
+		obj.device = tonumber(args.device) or 0
+	end
 
 	-- Create imagebox widget
 	obj.widget = wibox.widget.imagebox()
@@ -80,7 +85,7 @@ function Volume:getVolume()
 		-- Unfortunately, Pulse Audio doesn't have a nice way to get the
 		-- current volume, so we have this unfortunate hack. Likely the most
 		-- brittle part of the code
-		result = run("pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,'")
+		result = run("pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( " .. (self.device+1) .. " )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,'")
 		return result
 	end
 	return string.gsub(string.match(result, "%[%d*%%%]"), "%D", "")

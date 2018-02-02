@@ -76,14 +76,15 @@ into the `new` function instead of the default empty table.
   The default is `5`.
 - **device**: The device to control. The default is "Master", which will work
   for ALSA but not PulseAudio. When using PulseAudio, "devices" in this case
-  refer to "sinks". You probably want "0" as your device. You can take a look
-  at your available sinks with `pacmd list-sinks`.
+  refer to "sinks", which are represented by indexes. You probably want 0 as
+  your device. You can take a look at your available sinks with `pacmd
+  list-sinks`.
 
 The following is an example configuration:
 
 ```
 local volume = volume_widget:new({
     backend="pulseaudio",
-    device="0",
+    device=0,
     step=2})
 ```
