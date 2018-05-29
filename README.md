@@ -6,6 +6,18 @@ the volume up and down buttons on your keyboard, if you have them.
 
 This widget has been tested on awesome v4.2.
 
+### Deprecation Notice
+
+This widget has been deprecated. I'm not personally using it anymore. I will
+happily take pull requests but I won't be actively maintaining it myself. This
+widget has only ever worked for the most basic of audio configurations because
+the way it interacts with PulseAudio is very crude and brittle. I'm sure
+there's a better way but I'm not personally interested in digging into it.
+
+If you want a window manager-agnostic volume controller, I would recommend
+pasystray. I've had a lot of luck with it so far and it's available on all
+major distributions near as I can tell.
+
 ### Dependencies
 
 No extra Awesome libraries are required, but the widget uses the
